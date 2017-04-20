@@ -1,0 +1,4 @@
+Deny from all
+Allow from ::1
+
+

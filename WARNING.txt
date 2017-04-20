@@ -1,0 +1,12 @@
+
+
+DO NOT KEEP THIS FOLDER IN PRODUCTION!
+
+
+remove it, or place it in a safer place
+
+
+This folder contains private datas that shouldn't be never be accessible from public access.
+As far as the setup is done, this folder is no longer needed
+
+check README for more information

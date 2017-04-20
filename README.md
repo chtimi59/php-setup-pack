@@ -55,7 +55,7 @@ Once, it's done, project_dir/setup/*setup.conf* should be setup according your n
         "db"    : true,
         "user"  : true,
         "admin" : true,
-        "mail"  : true,        
+        "mail"  : true
     }
 }    
 ```
@@ -70,18 +70,18 @@ Just here for convignence
 
 Ok, That means that you should update project_dir/setup/**setup.sql** according your needs.
 
-## feature "user"
+## "user"
 Note: this requiered **db** to be ON
 - Will ask for a user-table name
 - Will configure your database with *user.sql*
 
-Ok, here again you can update project_dir/setup/**user.sql** where some fields are mandatory.
+Ok, here again you can update project_dir/setup/**users.sql** where some fields are mandatory.
 
-## features "admin"
+## "admin"
 Note: this requiere **db** and **user** to be ON
 - Will simply insert admin user in user's table
 
-## features "mail"
+## "mail"
 Note: this requiered to add **PHPMailer** in your project libs folder
 ```
 git submodule add https://github.com/PHPMailer/PHPMailer.git libs/PHPMailer
