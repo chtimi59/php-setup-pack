@@ -2,10 +2,30 @@
 A basic setup tool for your php webSite project
 
 # Motivation
-It's ofen a pain to deploy a website on a server, when it content different credential for mail, database, etc....
-This little tool gives the possibility to setting-up and tests that stuffs.
+It's ofen a pain to deploy a website on a server, when it contents different credentials for mail, database.
+This little tool gives the possibility to set up and tests that stuffs.
 
-At the end of the process, a 'conf.php' file is generated and should be include in your project.
+At the end of the process (if tests pass), a 'conf.php' file is generated. That means that your index.php can looks like this:
+
+```php
+<?php
+if(!@include("conf.php")) {
+    echo "Setup missing";
+    error_log("Setup missing");
+    die();
+}
+
+[...]
+
+```
+
+conf.php wills contains:
+```
+$GLOBALS['CONFIG']
+```
+
+A global array for your credentials/configuration.
+
 
 # Setting up your project
 
