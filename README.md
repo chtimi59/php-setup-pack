@@ -95,8 +95,8 @@ You just open http://yoururl/setup and follow the instruction.
 
 At this end a *conf.php* file should be generated.
 
-![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/doc/page1.png)
-![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/doc/page2.png)
+![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/docs/page1.png)
+![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/docs/page2.png)
 
 
 
