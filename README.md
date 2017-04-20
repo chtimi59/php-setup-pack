@@ -93,9 +93,10 @@ git submodule add https://github.com/PHPMailer/PHPMailer.git libs/PHPMailer
 # Usage
 You just open http://yoururl/setup and follow the instruction.
 
+![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/docs/page1.png)
+
 At this end a *conf.php* file should be generated.
 
-![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/docs/page1.png)
 ![alt tag](https://raw.githubusercontent.com/chtimi59/php-setup-pack/master/docs/page2.png)
 
 
