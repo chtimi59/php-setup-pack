@@ -60,37 +60,37 @@ Once, it's done, project_dir/setup/*setup.conf* should be setup according your n
 }    
 ```
 
-## Title
+## "title"
 Just here for convignence
 
-## features-db
+## feature "db"
 - Will ask for MYSQL Database credentials
-- Will test then
+- Will test them
 - Will configure your database with *setup.sql*
 
-Ok, That means that you should update project_dir/setup/*setup.sql* according your needs.
+Ok, That means that you should update project_dir/setup/**setup.sql** according your needs.
 
-## features-user
-Note: this requiered **features-db** to be ON
+## feature "user"
+Note: this requiered **db** to be ON
 - Will ask for a user-table name
 - Will configure your database with *user.sql*
 
-Ok, here again you can update project_dir/setup/*user.sql*
+Ok, here again you can update project_dir/setup/**user.sql** where some fields are mandatory.
 
-**Some fields are mandatory!**
+## features "admin"
+Note: this requiere **db** and **user** to be ON
+- Will simply insert admin user in user's table
 
-## features-admin
-Note: this requiere **features-db** and **features-user** to be ON
-- Will insert admin user in user's table
-
-## features-mail
+## features "mail"
 Note: this requiered to add **PHPMailer** in your project libs folder
 ```
 git submodule add https://github.com/PHPMailer/PHPMailer.git libs/PHPMailer
 ```
-- Will test smtp credentials by sending you an email
+- Will ask for SMTP credentials
+- Will test them
+- Will sending you back an email
 
-#Usage
+# Usage
 You just open http://yoururl/setup and follow the instruction.
 
 At this end a *conf.php* file should be generated.
