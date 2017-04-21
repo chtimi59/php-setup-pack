@@ -1,16 +1,4 @@
-<?php
-include("guid.php");
-include("sql.php");
-date_default_timezone_set('America/Montreal');
-$string = file_get_contents("setup.conf");
-$setup = json_decode($string, true);
-if (!$setup) die("setup.conf JSON error");
-if ($setup['features']['user'] && !$setup['features']['db'])
-    die("setup.conf error 'user' needs 'db'");
-if ($setup['features']['admin'] && (!$setup['features']['db'] || !$setup['features']['user']))
-    die("setup.conf error 'admin' needs 'db' and 'user'");
-$title = "** Setup of ".$setup['title']." **";
-?>
+<?php include('header.php'); ?>
 
 <html>
 <head>
@@ -90,7 +78,7 @@ if(true){try{do
         $DATA['admin_uuid'] = $_POST['admin_uuid'];
         if (!isset ($_POST['admin_pw'])) { printKO("admin_pw missing!"); break; } 
         if (empty($_POST['admin_pw'])) { printKO("admin_pw empty!"); break; }  
-        $DATA['admin_pw'] = $_POST['admin_pw'];
+        $admin_pw = $_POST['admin_pw'];
     }
     
     if ($setup['features']['mail']) {
@@ -114,10 +102,18 @@ if(true){try{do
         if (empty($_POST['smtp_email'])) { printKO("smtp_email empty!"); break; }  
         $DATA['smtp_email'] = $_POST['smtp_email'];
     }
-
+	
 
 // -------------------------------------------------------------------
 
+	/* 0. add debug/production info */
+	if (($_SERVER['SERVER_ADDR']=='localhost' ) || $_SERVER["SERVER_ADDR"]=="127.0.0.1" || ($_SERVER["SERVER_ADDR"]=="::1")) {
+        $DATA['debug'] = true;
+        printOK("Debug Mode");
+    } else {
+        $DATA['debug'] = false;
+        printOK("Production Mode");
+    }
 	
 	/* 1. Generate configuration file */
 	$string = @json_encode($DATA);
@@ -174,15 +170,10 @@ if(true){try{do
     fclose($file);
     printOK("write to '$confPhpFile'</br>Configuration Done!");
     
-    /* 4. include basics */
-    include '../conf.php';
-    if (($_SERVER['SERVER_ADDR']=='localhost' ) || $_SERVER["SERVER_ADDR"]=="127.0.0.1" || ($_SERVER["SERVER_ADDR"]=="::1")) {
-        $GLOBALS['DEBUG'] = true;
-        printOK("Debug Mode");
-    } else {
-        $GLOBALS['DEBUG'] = false;
-        printOK("Production Mode");
-    }
+	/* 4. let's include conf.php */
+	if (!file_exists ('../conf.php')) { printKO("conf.php not correctly generated"); break; }
+    include('../conf.php');
+	printOK("inclusion of conf.php OK");
     
     /* 5. test mysql */
     if ($setup['features']['db']) {
@@ -204,7 +195,7 @@ if(true){try{do
         }    
 
         /* 6. apply setup.sql */
-        $ret = applySqlFile('setup.sql');
+        $ret = applySqlFile($setup_sql);
         if ($ret) { printKO($ret); break; }
         printOK("Apply 'setup.sql'<br>Database Configured!");
     }
@@ -212,7 +203,7 @@ if(true){try{do
     /* 7. add user table */
     if ($setup['features']['user']) {
         $replace_arr=array('%USER_TABLE_NAME%' => $GLOBALS['CONFIG']['user_table']);
-        $ret = applySqlFile('users.sql',$replace_arr);
+        $ret = applySqlFile($users_sql,$replace_arr);
         if ($ret) { printKO($ret); break; }
         printOK("Apply 'users.sql'<br>Users table Added!");
     }
@@ -223,7 +214,7 @@ if(true){try{do
         $req .= "(`UUID`, `EMAIL`, `PASSWORD`, `PRIVILEGE`, `CREATION_DATE`) VALUES (";    
         $req .= "'".$DATA['admin_uuid']."',";
         $req .= "'".$DATA['admin_email']."',";
-        $req .= "'".md5($DATA['admin_pw'])."',";
+        $req .= "'".md5($admin_pw)."',";
         $req .= "1,";
         $req .= "now())";
         if (!@mysql_query($req)){
@@ -236,7 +227,7 @@ if(true){try{do
     if ($setup['features']['db']) @mysql_close($db);
         
     /* 8. test email */
-    if ($setup['features']['admin']) {
+    if ($setup['features']['mail']) {
         require '../libs/PHPMailer/PHPMailerAutoload.php';
         $mail = new PHPMailer();
         $mail->IsSMTP();

@@ -19,9 +19,34 @@ if(!@include("conf.php")) {
 
 ```
 
-conf.php wills contains:
-```
-$GLOBALS['CONFIG']
+conf.php wills contains the following definitions:
+```php
+$GLOBALS['CONFIG']['debug']      /* which is true if server is on localhost */
+$GLOBALS['CONFIG']['base_url']   /* base url specified, ex]: 'http://mywebsite/main' */
+
+/* if using db */
+$GLOBALS['CONFIG']['sql_host']   /* sql host, ex: localhost */
+$GLOBALS['CONFIG']['sql_login']  /* sql host, ex: root */
+$GLOBALS['CONFIG']['sql_isPW']   /* sql needs a password */
+$GLOBALS['CONFIG']['sql_pw']     /* sql password */
+$GLOBALS['CONFIG']['sql_db']     /* sql database used */
+
+/* if using user */
+$GLOBALS['CONFIG']['user_table'] /* user table name in db */
+
+/* if using admin */
+$GLOBALS['CONFIG']['admin_email'] /* admin email */
+$GLOBALS['CONFIG']['admin_uuid']  /* admin uuid */
+
+/* if using email */
+$GLOBALS['CONFIG']['smtp_host']   /* smtp host address */
+$GLOBALS['CONFIG']['smtp_port']   /* smtp host port */
+$GLOBALS['CONFIG']['smtp_login']  /* smtp login */
+$GLOBALS['CONFIG']['smtp_isPW']   /* smtp needs a password */
+$GLOBALS['CONFIG']['smtp_pw']     /* smtp password */
+$GLOBALS['CONFIG']['smtp_secure'] /* none,ssl,tsl */
+$GLOBALS['CONFIG']['smtp_auth']   /* true if secure is not 'none' */
+$GLOBALS['CONFIG']['smtp_email']  /* smtp relative email */
 ```
 
 A global array for your credentials/configuration.
@@ -31,14 +56,19 @@ A global array for your credentials/configuration.
 
 This git repo, should actually be used as a git's submodule in your project.
 
-The following aborescence tree is expected:
+The following arborescence tree is expected:
 
 ```
 project_dir/
-   /libs   - external libs
-   /setup  - this submodule
-   conf.php - the generated file will layed here
-              and should be include in your project
+   libs\      - external libs
+   setup\     - this submodule
+   
+   setup.conf - setup configuration file *(could be inspired from setup/setup.conf)*
+   setup.sql  - database script *(could be inspired from setup/setup.sql)*
+   users.sql  - database script *(could be inspired from setup/users.sql)*
+   
+   conf.php   - the generated file will layed here
+                and should be include in your project
 ```
 
 Hence, to add this submodule, write:
@@ -46,7 +76,7 @@ Hence, to add this submodule, write:
 git submodule add https://github.com/chtimi59/php-setup-pack.git setup
 ```
 
-Once, it's done, project_dir/setup/*setup.conf* should be setup according your needs
+Once, it's done, project_dir/*setup.conf* should be setup according your needs
 
 ```json
 {
@@ -61,7 +91,7 @@ Once, it's done, project_dir/setup/*setup.conf* should be setup according your n
 ```
 
 ## "title"
-Just here for convignence
+Just here for convenience
 
 ## feature "db"
 - Will ask for MYSQL Database credentials
@@ -73,12 +103,12 @@ Ok, That means that you should update project_dir/setup/**setup.sql** according 
 ## "user"
 Note: this requiered **db** to be ON
 - Will ask for a user-table name
-- Will configure your database with *user.sql*
+- Will configure your database with *users.sql*
 
-Ok, here again you can update project_dir/setup/**users.sql** where some fields are mandatory.
+Ok, here again you can update project_dir/**users.sql** where some fields are mandatory.
 
 ## "admin"
-Note: this requiere **db** and **user** to be ON
+Note: this requiered **db** and **user** to be ON
 - Will simply insert admin user in user's table
 
 ## "mail"
