@@ -78,7 +78,7 @@ if(true){try{do
         $DATA['admin_uuid'] = $_POST['admin_uuid'];
         if (!isset ($_POST['admin_pw'])) { printKO("admin_pw missing!"); break; } 
         if (empty($_POST['admin_pw'])) { printKO("admin_pw empty!"); break; }  
-        $admin_pw = $_POST['admin_pw'];
+        $DATA['admin_pw'] = $_POST['admin_pw'];
     }
     
     if ($setup['features']['mail']) {
@@ -214,7 +214,7 @@ if(true){try{do
         $req .= "(`UUID`, `EMAIL`, `PASSWORD`, `PRIVILEGE`, `CREATION_DATE`) VALUES (";    
         $req .= "'".$DATA['admin_uuid']."',";
         $req .= "'".$DATA['admin_email']."',";
-        $req .= "'".md5($admin_pw)."',";
+        $req .= "'".md5($DATA['admin_pw'])."',";
         $req .= "1,";
         $req .= "now())";
         if (!@mysql_query($req)){
