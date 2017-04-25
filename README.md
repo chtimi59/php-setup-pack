@@ -5,15 +5,10 @@ A basic setup tool for your php webSite project
 It's ofen a pain to deploy a website on a server, when it contents different credentials for mail, database.
 This little tool gives the possibility to setup and also tests that stuffs.
 
-At the end of the process (if tests pass), a 'conf.php' file is generated. That means that your index.php can look like this:
+At the end of the process (if tests pass), a 'conf.php' file is generated. That means that your index.php can starts like this:
 
 ```php
-<?php
-if(!@include("conf.php")) {
-    echo "Setup missing";
-    error_log("Setup missing");
-    die();
-}
+<?php if(!@include("conf.php")) { echo("Setup missing"); die(); }
 
 [...]
 
@@ -23,6 +18,7 @@ and conf.php will contains all the following definitions:
 ```php
 $GLOBALS['CONFIG']['debug']       /* which is true if server is on localhost */
 $GLOBALS['CONFIG']['base_url']    /* base url specified, ex: 'http://mywebsite/main' */
+$GLOBALS['CONFIG']['root_path']   /* root path, ex: 'C:\wamp64\www\mywebsite\main' */
 
 /* if using db */
 $GLOBALS['CONFIG']['sql_host']    /* sql host, ex: localhost */

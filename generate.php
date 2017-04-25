@@ -165,8 +165,9 @@ if(true){try{do
     fwrite($file, '$s=@openssl_decrypt($e,$m,\''.$secretHash.'\',0,$i);'.$nl);               
     fwrite($file, 'if(!isset($s)||trim($s)===\'\'){echo("error 2");die();}'.$nl);                       
     fwrite($file, '$GLOBALS[\'CONFIG\']=@json_decode($s,true);'.$nl);                           
+    fwrite($file, '$GLOBALS[\'CONFIG\'][\'root_path\']=realpath(dirname(__FILE__));'.$nl);                           
     fwrite($file, '} ?>'.$nl);
-    /* fwrite($file, '<?PHP foreach ($GLOBALS[\'CONFIG\'] as $key => $value) { echo ("$key: $value<br>"); } ?>'); */
+    /*fwrite($file, '<?PHP foreach ($GLOBALS[\'CONFIG\'] as $key => $value) { echo ("$key: $value<br>"); } ?>'); */
     fclose($file);
     printOK("write to '$confPhpFile'</br>Configuration Done!");
     
