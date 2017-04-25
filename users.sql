@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS `%USER_TABLE_NAME%` (
   `CREATION_DATE` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `PRIVILEGE` int(11) NOT NULL DEFAULT '0',
   `LAST_CONNECTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,    
-  
+  `LAST_IP` varchar(20) NULL,
   -- CUSTONIZABLE PART
-  
+
      -- This actually just an example, of additionnal field
     `FIRSTNAME` varchar(128),
   
