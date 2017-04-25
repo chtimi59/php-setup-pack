@@ -234,30 +234,30 @@ if(true){try{do
         $mail->SMTPDebug  = 4;
         $mail->Host       = $GLOBALS['CONFIG']['smtp_host'];	
         $mail->Port       = $GLOBALS['CONFIG']['smtp_port'];
-        $mail->Username   = $GLOBALS['CONFIG']['smtp_login'];	
-        $mail->Password   = $GLOBALS['CONFIG']['smtp_pw'];											   
+        $mail->Username   = $GLOBALS['CONFIG']['smtp_login'];
+        $mail->Password   = $GLOBALS['CONFIG']['smtp_pw'];
         $mail->SMTPAuth   = $GLOBALS['CONFIG']['smtp_auth'];
-        $mail->SMTPSecure = $GLOBALS['CONFIG']['smtp_secure'];	
+        $mail->SMTPSecure = $GLOBALS['CONFIG']['smtp_secure'];
         $mail->IsHTML(true);
         $mail->SetFrom($GLOBALS['CONFIG']['smtp_email']);
-        $mail->addReplyTo($GLOBALS['CONFIG']['smtp_email']);	
+        $mail->addReplyTo($GLOBALS['CONFIG']['smtp_email']);
         $mail->addAddress($GLOBALS['CONFIG']['smtp_email']);
-        $mail->Subject = "Test from ".$setup['title'];	            
+        $mail->Subject = "Test from ".$setup['title'];
         $mail->Body = "<h1>If you can read this that mean your setup is correct!</h1>"; 
         print("<tr><td><textarea style='width:100%;'>");
         
         if($mail->Send()) {
             print("</textarea><br>");
-            print("Send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['admin_email']);
+            print("Send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['smtp_email']);
             print("</td>");
             print("<td class='success'>OK</td>");
         } else {   
             print("</textarea><br>");
-            print("Failed to send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['admin_email']." ".$mail->ErrorInfo);
+            print("Failed to send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['smtp_email']." ".$mail->ErrorInfo);
             print("</td>");
             print("<td class='error'>KO</td>");
-            break; 		
-        }    
+            break;
+        }
     }
     $SUCESS_SETUP = true;
     
