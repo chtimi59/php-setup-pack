@@ -67,7 +67,7 @@ project_dir\
 
 Hence, to add this submodule, write:
 ```
-git submodule add git@github.com:chtimi59/php-setup-pack.git setup
+git submodule add https://github.com/chtimi59/php-setup-pack.git setup
 ```
 
 Once, it's done, create a project_dir/*setup.conf* according your needs:

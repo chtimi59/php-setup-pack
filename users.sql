@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `%USER_TABLE_NAME%` (
   -- CUSTONIZABLE PART
 
      -- This actually just an example, of additionnal field
-    `FIRSTNAME` varchar(128),
+    `FIRST_NAME` varchar(128),
   
   -- /CUSTONIZABLE  
   
