@@ -1,16 +1,4 @@
-<?php
-include("guid.php");
-include("sql.php");
-date_default_timezone_set('America/Montreal');
-$string = file_get_contents("setup.conf");
-$setup = json_decode($string, true);
-if (!$setup) die("setup.conf JSON error");
-if ($setup['features']['user'] && !$setup['features']['db'])
-    die("setup.conf error 'user' needs 'db'");
-if ($setup['features']['admin'] && (!$setup['features']['db'] || !$setup['features']['user']))
-    die("setup.conf error 'admin' needs 'db' and 'user'");
-$title = "** Setup of ".$setup['title']." **";
-?>
+<?php include('header.php'); ?>
 
 <html>
 <head>
@@ -114,16 +102,24 @@ if(true){try{do
         if (empty($_POST['smtp_email'])) { printKO("smtp_email empty!"); break; }  
         $DATA['smtp_email'] = $_POST['smtp_email'];
     }
-
+	
 
 // -------------------------------------------------------------------
 
-    /* 0. Prequist */
+    /* Prequist */
 	if(!function_exists('mcrypt_encrypt')) {
         printKO("mcrypt isn't loaded!"); break; 
     }
     printOK("Prequist OK!"); break; 
-
+	/* 0. add debug/production info */
+	if (($_SERVER['SERVER_ADDR']=='localhost' ) || $_SERVER["SERVER_ADDR"]=="127.0.0.1" || ($_SERVER["SERVER_ADDR"]=="::1")) {
+        $DATA['debug'] = true;
+        printOK("Debug Mode");
+    } else {
+        $DATA['debug'] = false;
+        printOK("Production Mode");
+    }
+	
 	/* 1. Generate configuration file */
 	$string = @json_encode($DATA);
 	$encryptionMethod = 'aes128';
@@ -174,20 +170,16 @@ if(true){try{do
     fwrite($file, '$s=@openssl_decrypt($e,$m,\''.$secretHash.'\',0,$i);'.$nl);               
     fwrite($file, 'if(!isset($s)||trim($s)===\'\'){echo("error 2");die();}'.$nl);                       
     fwrite($file, '$GLOBALS[\'CONFIG\']=@json_decode($s,true);'.$nl);                           
+    fwrite($file, '$GLOBALS[\'CONFIG\'][\'root_path\']=realpath(dirname(__FILE__));'.$nl);                           
     fwrite($file, '} ?>'.$nl);
-    /* fwrite($file, '<?PHP foreach ($GLOBALS[\'CONFIG\'] as $key => $value) { echo ("$key: $value<br>"); } ?>'); */
+    /*fwrite($file, '<?PHP foreach ($GLOBALS[\'CONFIG\'] as $key => $value) { echo ("$key: $value<br>"); } ?>'); */
     fclose($file);
     printOK("write to '$confPhpFile'</br>Configuration Done!");
     
-    /* 4. include basics */
-    include '../conf.php';
-    if (($_SERVER['SERVER_ADDR']=='localhost' ) || $_SERVER["SERVER_ADDR"]=="127.0.0.1" || ($_SERVER["SERVER_ADDR"]=="::1")) {
-        $GLOBALS['DEBUG'] = true;
-        printOK("Debug Mode");
-    } else {
-        $GLOBALS['DEBUG'] = false;
-        printOK("Production Mode");
-    }
+	/* 4. let's include conf.php */
+	if (!file_exists ('../conf.php')) { printKO("conf.php not correctly generated"); break; }
+    include('../conf.php');
+	printOK("inclusion of conf.php OK");
     
     /* 5. test mysql */
     if ($setup['features']['db']) {
@@ -209,7 +201,7 @@ if(true){try{do
         }    
 
         /* 6. apply setup.sql */
-        $ret = applySqlFile('setup.sql');
+        $ret = applySqlFile($setup_sql);
         if ($ret) { printKO($ret); break; }
         printOK("Apply 'setup.sql'<br>Database Configured!");
     }
@@ -217,7 +209,7 @@ if(true){try{do
     /* 7. add user table */
     if ($setup['features']['user']) {
         $replace_arr=array('%USER_TABLE_NAME%' => $GLOBALS['CONFIG']['user_table']);
-        $ret = applySqlFile('users.sql',$replace_arr);
+        $ret = applySqlFile($users_sql,$replace_arr);
         if ($ret) { printKO($ret); break; }
         printOK("Apply 'users.sql'<br>Users table Added!");
     }
@@ -241,37 +233,37 @@ if(true){try{do
     if ($setup['features']['db']) @mysql_close($db);
         
     /* 8. test email */
-    if ($setup['features']['admin']) {
+    if ($setup['features']['mail']) {
         require '../libs/PHPMailer/PHPMailerAutoload.php';
         $mail = new PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPDebug  = 4;
         $mail->Host       = $GLOBALS['CONFIG']['smtp_host'];	
         $mail->Port       = $GLOBALS['CONFIG']['smtp_port'];
-        $mail->Username   = $GLOBALS['CONFIG']['smtp_login'];	
-        $mail->Password   = $GLOBALS['CONFIG']['smtp_pw'];											   
+        $mail->Username   = $GLOBALS['CONFIG']['smtp_login'];
+        $mail->Password   = $GLOBALS['CONFIG']['smtp_pw'];
         $mail->SMTPAuth   = $GLOBALS['CONFIG']['smtp_auth'];
-        $mail->SMTPSecure = $GLOBALS['CONFIG']['smtp_secure'];	
+        $mail->SMTPSecure = $GLOBALS['CONFIG']['smtp_secure'];
         $mail->IsHTML(true);
         $mail->SetFrom($GLOBALS['CONFIG']['smtp_email']);
-        $mail->addReplyTo($GLOBALS['CONFIG']['smtp_email']);	
+        $mail->addReplyTo($GLOBALS['CONFIG']['smtp_email']);
         $mail->addAddress($GLOBALS['CONFIG']['smtp_email']);
-        $mail->Subject = "Test from ".$setup['title'];	            
+        $mail->Subject = "Test from ".$setup['title'];
         $mail->Body = "<h1>If you can read this that mean your setup is correct!</h1>"; 
         print("<tr><td><textarea style='width:100%;'>");
         
         if($mail->Send()) {
             print("</textarea><br>");
-            print("Send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['admin_email']);
+            print("Send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['smtp_email']);
             print("</td>");
             print("<td class='success'>OK</td>");
         } else {   
             print("</textarea><br>");
-            print("Failed to send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['admin_email']." ".$mail->ErrorInfo);
+            print("Failed to send an email<br>&nbsp&nbspfrom: ".$GLOBALS['CONFIG']['smtp_email']."<br>&nbsp&nbspto:&nbsp&nbsp ".$DATA['smtp_email']." ".$mail->ErrorInfo);
             print("</td>");
             print("<td class='error'>KO</td>");
-            break; 		
-        }    
+            break;
+        }
     }
     $SUCESS_SETUP = true;
     

@@ -1,14 +1,5 @@
 <?php
-include("guid.php");
-date_default_timezone_set('America/Montreal');
-$string = file_get_contents("setup.conf");
-$setup = json_decode($string, true);
-if (!$setup) die("setup.conf JSON error");
-if ($setup['features']['user'] && !$setup['features']['db'])
-    die("setup.conf error 'user' needs 'db'");
-if ($setup['features']['admin'] && (!$setup['features']['db'] || !$setup['features']['user']))
-    die("setup.conf error 'admin' needs 'db' and 'user'");
-$title = "** Setup of ".$setup['title']." **";
+include('header.php');
 
 // default values
 $pageURL = ((isset($_SERVER['HTTPS'])) && ($_SERVER['HTTPS']) == 'on') ? 'https://' : 'http://';
