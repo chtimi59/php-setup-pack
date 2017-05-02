@@ -124,7 +124,7 @@ if(true){try{do
     /* 1. Generate configuration file */
     $string = @json_encode($DATA);
     $encryptionMethod = 'aes128';
-    $iv = @mcrypt_create_iv(16, MCRYPT_DEV_RANDOM);
+    $iv = @mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
     if (!@file_put_contents ($confPath, $iv.openssl_encrypt ($string, $encryptionMethod, $secretHash, NULL, $iv))) {
         printKO("Failed to write to '$confPath'"); break;
     } else {
