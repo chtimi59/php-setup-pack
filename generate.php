@@ -118,7 +118,12 @@ if(true){try{do
 
 // -------------------------------------------------------------------
 
-	
+    /* 0. Prequist */
+	if(!function_exists('mcrypt_encrypt')) {
+        printKO("mcrypt isn't loaded!"); break; 
+    }
+    printOK("Prequist OK!"); break; 
+
 	/* 1. Generate configuration file */
 	$string = @json_encode($DATA);
 	$encryptionMethod = 'aes128';
