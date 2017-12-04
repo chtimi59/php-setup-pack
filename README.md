@@ -114,6 +114,12 @@ Note: this requiered **db** and **user** to be ON
 Note: this requiered to add **PHPMailer** in your project libs folder
 ```
 git submodule add https://github.com/PHPMailer/PHPMailer.git libs/PHPMailer
+pushd libs/PHPMailer
+git checkout v5.2.23
+popd
+git add libs/PHPMailer
+git commit -m "moved submodule to libs/PHPMailer"
+git push
 ```
 - Will ask for SMTP credentials
 - Will test them
